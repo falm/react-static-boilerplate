@@ -1,12 +1,3 @@
-/**
- * React Static Boilerplate
- * https://github.com/kriasoft/react-static-boilerplate
- *
- * Copyright © 2015-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
 
 /* eslint-disable global-require, no-confusing-arrow, max-len */
 
@@ -15,7 +6,14 @@ const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const pkg = require('../package.json');
 
-const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
+const isDebug = (() => {
+  if (global.DEBUG === false && process.env.NODE_ENV === 'production') {
+    return false;
+  } else {
+    return !process.argv.includes('--release');
+  }
+})();
+
 const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
 const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const babelConfig = Object.assign({}, pkg.babel, {
@@ -69,7 +67,9 @@ const config = {
   // The list of plugins for Webpack compiler
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
       __DEV__: isDebug,
     }),
     // Emit a JSON file with assets paths
@@ -93,6 +93,7 @@ const config = {
         include: [
           path.resolve(__dirname, '../src'),
           path.resolve(__dirname, '../components'),
+          path.resolve(__dirname, '../config'),
         ],
         loader: 'babel-loader',
         options: babelConfig,
@@ -161,6 +162,13 @@ const config = {
         loader: 'file-loader',
       },
     ],
+  },
+
+  resolve: {
+    alias: {
+      config: path.join(__dirname, '../config', process.env.NODE_ENV),
+      utils: path.join(__dirname, '../tools', 'utils'),
+    },
   },
 };
 
