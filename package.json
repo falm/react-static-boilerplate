@@ -112,8 +112,6 @@
     "test:watch": "mocha --compilers js:babel-register --reporter min --watch",
     "build": "node tools/build.js",
     "build:debug": "node tools/build.js --debug",
-    "publish": "node tools/publish.js",
-    "publish:debug": "node tools/publish.js --debug",
     "start": "node tools/run.js"
   }
 }
