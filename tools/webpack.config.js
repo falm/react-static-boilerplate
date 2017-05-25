@@ -1,4 +1,3 @@
-
 /* eslint-disable global-require, no-confusing-arrow, max-len */
 
 const path = require('path');
@@ -32,8 +31,6 @@ const config = {
   // The entry point for the bundle
   entry: [
     /* Material Design Lite (https://getmdl.io) */
-    '!!style-loader!css-loader!react-mdl/extra/material.min.css',
-    'react-mdl/extra/material.min.js',
     /* The main entry point of your JavaScript application */
     './main.js',
   ],
@@ -145,10 +142,6 @@ const config = {
             loader: path.resolve(__dirname, './routes-loader.js'),
           },
         ],
-      },
-      {
-        test: /\.md$/,
-        loader: path.resolve(__dirname, './markdown-loader.js'),
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
