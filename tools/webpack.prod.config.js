@@ -7,7 +7,6 @@ const pkg = require('../package.json');
 
 const isDebug = false;
 
-const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
 const babelConfig = Object.assign({}, pkg.babel, {
   babelrc: false,
   cacheDirectory: false,
@@ -18,14 +17,6 @@ const babelConfig = Object.assign({}, pkg.babel, {
 // http://webpack.github.io/docs/configuration.html
 const config = {
 
-  // The base directory for resolving the entry option
-  context: path.resolve(__dirname, '../src'),
-
-  // The entry point for the bundle
-  entry: [
-    /* The main entry point of your JavaScript application */
-    './main.js',
-  ],
 
   // Options affecting the output of the compilation
   output: {
@@ -39,19 +30,6 @@ const config = {
   // Developer tool to enhance debugging, source maps
   // http://webpack.github.io/docs/configuration.html#devtool
   devtool: false,
-
-  // What information should be printed to the console
-  stats: {
-    colors: true,
-    reasons: isDebug,
-    hash: isVerbose,
-    version: isVerbose,
-    timings: true,
-    chunks: isVerbose,
-    chunkModules: isVerbose,
-    cached: isVerbose,
-    cachedAssets: isVerbose,
-  },
 
   // The list of plugins for Webpack compiler
   plugins: [
@@ -164,6 +142,7 @@ config.plugins.push(new webpack.optimize.UglifyJsPlugin({
     warnings: isVerbose,
   },
 }));
+
 config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
 
 

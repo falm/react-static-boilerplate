@@ -7,7 +7,6 @@ const pkg = require('../package.json');
 
 const isDebug = true;
 
-const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
 const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const babelConfig = Object.assign({}, pkg.babel, {
   babelrc: false,
@@ -19,15 +18,9 @@ const babelConfig = Object.assign({}, pkg.babel, {
 // http://webpack.github.io/docs/configuration.html
 const config = {
 
-  // The base directory for resolving the entry option
-  context: path.resolve(__dirname, '../src'),
-
-  // The entry point for the bundle
   entry: [
-    /* The main entry point of your JavaScript application */
     './main.js',
   ],
-
   // Options affecting the output of the compilation
   output: {
     path: path.resolve(__dirname, '../public/dist'),
@@ -40,19 +33,6 @@ const config = {
   // Developer tool to enhance debugging, source maps
   // http://webpack.github.io/docs/configuration.html#devtool
   devtool: isDebug ? 'source-map' : false,
-
-  // What information should be printed to the console
-  stats: {
-    colors: true,
-    reasons: isDebug,
-    hash: isVerbose,
-    version: isVerbose,
-    timings: true,
-    chunks: isVerbose,
-    chunkModules: isVerbose,
-    cached: isVerbose,
-    cachedAssets: isVerbose,
-  },
 
   // The list of plugins for Webpack compiler
   plugins: [
@@ -158,23 +138,14 @@ const config = {
   },
 };
 
-// Optimize the bundle in release (production) mode
-if (!isDebug) {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    sourceMap: true,
-    compress: {
-      warnings: isVerbose,
-    },
-  }));
-  config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
-}
-
 // Hot Module Replacement (HMR) + React Hot Reload
-if (isDebug && useHMR) {
+if (useHMR) {
   babelConfig.plugins.unshift('react-hot-loader/babel');
+  // config.entry = ['react-hot-loader/patch', 'webpack-hot-middleware/client'];
   config.entry.unshift('react-hot-loader/patch', 'webpack-hot-middleware/client');
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
+  config.plugins.push(new webpack.NamedModulesPlugin());
 }
 
 module.exports = config;
